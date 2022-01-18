@@ -6,8 +6,8 @@ class TestFilterer extends AnyFunSuite {
 
   val startsWithR: GuessResult = GuessResult(
     positional = List(Known('r'), Unknown, Unknown, Unknown, Unknown),
-    knownAbsent = Set(),
-    somewhere = Set()
+    notPresent = Set(),
+    somewheres = Set()
   )
 
   test("filterer creates correct regex") {
@@ -16,8 +16,8 @@ class TestFilterer extends AnyFunSuite {
 
   val doesntStartWithA: GuessResult = GuessResult(
     positional = List(Not(Set('a')), Unknown, Unknown, Unknown, Unknown),
-    knownAbsent = Set(),
-    somewhere = Set()
+    notPresent = Set(),
+    somewheres = Set()
   )
 
   test("filterer creates correct regex for negation") {

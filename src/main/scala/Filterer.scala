@@ -5,7 +5,7 @@ import scala.util.matching.Regex
 class Filterer(guessResult: GuessResult) extends (String => Boolean) {
 
   val positionalRegex: Regex = positionalsToRegex
-  val absentRegex: Regex = (makeAbsentRegex(guessResult.knownAbsent) + "+").r
+  val absentRegex: Regex = (makeAbsentRegex(guessResult.notPresent) + "+").r
   val somewhereRegexes: Set[Regex] = makeSomewhereRegexes
 
   override def apply(w: String): Boolean = {
@@ -21,7 +21,7 @@ class Filterer(guessResult: GuessResult) extends (String => Boolean) {
     regex.r
   }
 
-  private def makeSomewhereRegexes = guessResult.somewhere.map(ch => (".*(" + ch + ").*").r)
+  private def makeSomewhereRegexes = guessResult.somewheres.map(ch => (".*(" + ch + ").*").r)
 
   private def makeAbsentRegex(s: Set[Char]) = if (s.isEmpty) "." else "[^" + s.mkString + "]"
 }

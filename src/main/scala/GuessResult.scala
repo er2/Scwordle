@@ -2,20 +2,20 @@ package com.ericriese.scwordle
 
 case class GuessResult(
                         positional: List[CharKnowledge],
-                        knownAbsent: Set[Char],
-                        somewhere: Set[Char]
+                        notPresent: Set[Char],
+                        somewheres: Set[Char]
                       ) {
   def +(other: GuessResult): GuessResult = {
     val sumOfPositionals = combinePositionals(other.positional)
     val knownLetters = sumOfPositionals.collect {
       case Known(c) => c
     }.toSet
-    val sumOfSomewhere = (this.somewhere ++ other.somewhere) -- knownLetters
+    val sumOfSomewheres = (this.somewheres ++ other.somewheres) -- knownLetters
 
     GuessResult(
-      sumOfPositionals,
-      this.knownAbsent ++ other.knownAbsent,
-      sumOfSomewhere
+      positional = sumOfPositionals,
+      notPresent = this.notPresent ++ other.notPresent,
+      somewheres = sumOfSomewheres
     )
   }
 
@@ -32,9 +32,9 @@ case class GuessResult(
 }
 
 object KnowNothing extends GuessResult(
-  List.fill(5)(Unknown),
-  Set(),
-  Set()
+  positional = List.fill(5)(Unknown),
+  notPresent = Set(),
+  somewheres = Set()
 )
 
 object GuessResult {
@@ -59,22 +59,22 @@ object GuessResult {
 
   private def knowOneLetterAt(c: Char, i: Int): GuessResult =
     GuessResult(
-      List.fill(5)(Unknown).updated(i, Known(c)),
-      Set(),
-      Set()
+      positional = List.fill(5)(Unknown).updated(i, Known(c)),
+      notPresent = Set(),
+      somewheres = Set()
     )
 
   private def no(c: Char): GuessResult =
     GuessResult(
-      List.fill(5)(Unknown),
-      Set(c),
-      Set()
+      positional = List.fill(5)(Unknown),
+      notPresent = Set(c),
+      somewheres = Set()
     )
 
   def elsewhere(c: Char, i: Int): GuessResult =
     GuessResult(
-      List.fill(5)(Unknown).updated(i, Not(Set(c))),
-      Set(),
-      Set(c)
+      positional = List.fill(5)(Unknown).updated(i, Not(Set(c))),
+      notPresent = Set(),
+      somewheres = Set(c)
     )
 }
