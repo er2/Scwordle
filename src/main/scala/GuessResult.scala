@@ -44,10 +44,12 @@ object GuessResult {
    * </pre>
    */
   def parse(play: String, response: String): GuessResult = {
+    response.ensuring(_.length == 5, "Response must be 5 characters long")
     (play zip response).zipWithIndex.collect {
       case ((c, 'v'), i) => knowOneLetterAt(c, i)
       case ((c, 'x'), _) => no(c)
       case ((c, '~'), i) => elsewhere(c, i)
+      case _ =>  throw new Exception("Invalid response format")
     }.reduce(_ + _)
   }
 

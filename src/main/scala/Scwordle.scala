@@ -9,15 +9,20 @@ object Scwordle {
   val random = new Random()
 
   def main(args: Array[String]): Unit = {
+
     var remainingCandidates = getDictionary
-    val byDistinctLetterCount = remainingCandidates.groupBy(countLetters)
-    val initialGuesses = byDistinctLetterCount(5)
-    val recommendedFirstPlay = pick(initialGuesses)
-    var lastPlay = recommendedFirstPlay
-    println(recommendedFirstPlay)
+
+    val firstPlay = {
+      val initialGuesses = remainingCandidates.filter(countLetters(_) == 5)
+      pick(initialGuesses)
+    }
+    println(firstPlay)
+
+    var lastPlay = firstPlay
     var guessResult: GuessResult = KnowNothing
+
     val scanner = new Scanner(System.in)
-    while(scanner.hasNext) {
+    while (scanner.hasNext) {
       val response = scanner.next()
       guessResult = guessResult + GuessResult.parse(lastPlay, response)
       remainingCandidates = remainingCandidates.filter(new Filterer(guessResult))
@@ -28,7 +33,7 @@ object Scwordle {
 
   private def pick(candidates: Seq[String]): String = {
     if (candidates.isEmpty)
-      throw new Error("out of ideas")
+      throw new Exception("out of ideas")
     candidates(random.nextInt(candidates.size))
   }
 
