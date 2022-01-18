@@ -17,11 +17,11 @@ class Filterer(guessResult: GuessResult) extends (String => Boolean) {
       case Known(c) => c
       case Not(s) => makeAbsentRegex(s)
       case Unknown => "."
-    }).mkString("")
+    }).mkString
     regex.r
   }
 
   private def makeSomewhereRegexes = guessResult.somewhere.map(ch => (".*(" + ch + ").*").r)
 
-  private def makeAbsentRegex(s: Set[Char]) = if (s.isEmpty) "." else "[^" + s.mkString("") + "]"
+  private def makeAbsentRegex(s: Set[Char]) = if (s.isEmpty) "." else "[^" + s.mkString + "]"
 }

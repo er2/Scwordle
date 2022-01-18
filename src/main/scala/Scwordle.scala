@@ -9,11 +9,10 @@ object Scwordle {
   val random = new Random()
 
   def main(args: Array[String]): Unit = {
-    val canonicalized = getDictionary
-    var remainingCandidates = canonicalized
-    val byDistinctLetterCount = canonicalized.groupBy(countLetters)
+    var remainingCandidates = getDictionary
+    val byDistinctLetterCount = remainingCandidates.groupBy(countLetters)
     val initialGuesses = byDistinctLetterCount(5)
-    val recommendedFirstPlay = guess(initialGuesses)
+    val recommendedFirstPlay = pick(initialGuesses)
     var lastPlay = recommendedFirstPlay
     println(recommendedFirstPlay)
     val scanner = new Scanner(System.in)
@@ -21,12 +20,12 @@ object Scwordle {
       val response = scanner.next()
       val guessResult = GuessResult.parse(lastPlay, response)
       remainingCandidates = remainingCandidates.filter(new Filterer(guessResult))
-      lastPlay = guess(remainingCandidates)
-      println("Recommended play: \n" + lastPlay)
+      lastPlay = pick(remainingCandidates)
+      println(lastPlay)
     }
   }
 
-  private def guess(candidates: Seq[String]): String = {
+  private def pick(candidates: Seq[String]): String = {
     if (candidates.isEmpty)
       throw new Error("out of ideas")
     candidates(random.nextInt(candidates.size))
@@ -45,6 +44,9 @@ object Scwordle {
   }
 
   private def removeAdjacentDuplicates(in: Iterator[String]): Seq[String] = {
-    in.foldLeft(List[String]())((list, word) => if (word.equalsIgnoreCase(list.headOption.getOrElse(""))) list else word :: list)
+    in.foldLeft(List[String]())((list, word) => {
+      if (word.equalsIgnoreCase(list.headOption.getOrElse(""))) list
+      else word :: list
+    })
   }
 }
