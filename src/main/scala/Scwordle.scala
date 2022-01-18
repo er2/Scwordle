@@ -10,7 +10,7 @@ object Scwordle {
 
   def main(args: Array[String]): Unit = {
 
-    var remainingCandidates = getDictionary
+    var remainingCandidates = Dictionary(Source.fromResource("words"))
 
     val firstPlay = {
       val initialGuesses = remainingCandidates.filter(countLetters(_) == 5)
@@ -39,24 +39,4 @@ object Scwordle {
 
   private def countLetters(s: String) = s.toSet.size
 
-  def getDictionary: Seq[String] = {
-    val dictionary = Source.fromResource("words").getLines()
-    val fives = dictionary
-      .filter(!_.contains("'"))
-      .filter(_.length == 5)
-      .filter(_ (0).isLower)
-    val canonicalized = removeAdjacentDuplicates(fives)
-    canonicalized
-  }
-
-  private def removeAdjacentDuplicates(in: Iterator[String]): Seq[String] = {
-    in.foldLeft(List[String]())((list, word) => {
-      if (list.isEmpty)
-        word :: list
-      else if (word.equalsIgnoreCase(list.head))
-        list
-      else
-        word :: list
-    })
-  }
 }
