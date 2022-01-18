@@ -15,10 +15,11 @@ object Scwordle {
     val recommendedFirstPlay = pick(initialGuesses)
     var lastPlay = recommendedFirstPlay
     println(recommendedFirstPlay)
+    var guessResult: GuessResult = KnowNothing
     val scanner = new Scanner(System.in)
     while(scanner.hasNext) {
       val response = scanner.next()
-      val guessResult = GuessResult.parse(lastPlay, response)
+      guessResult = guessResult + GuessResult.parse(lastPlay, response)
       remainingCandidates = remainingCandidates.filter(new Filterer(guessResult))
       lastPlay = pick(remainingCandidates)
       println(lastPlay)
