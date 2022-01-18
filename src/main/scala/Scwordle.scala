@@ -51,8 +51,12 @@ object Scwordle {
 
   private def removeAdjacentDuplicates(in: Iterator[String]): Seq[String] = {
     in.foldLeft(List[String]())((list, word) => {
-      if (word.equalsIgnoreCase(list.headOption.getOrElse(""))) list
-      else word :: list
+      if (list.isEmpty)
+        word :: list
+      else if (word.equalsIgnoreCase(list.head))
+        list
+      else
+        word :: list
     })
   }
 }
