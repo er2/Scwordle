@@ -12,15 +12,19 @@ class Filterer(clue: Clue) extends (String => Boolean) {
   }
 
   private def makePositionalRegex: Regex = {
-    val regex = clue.positional.map({
+    clue.positional.map {
       case Known(c) => c
       case Not(s) => absentRegex(s)
       case Unknown => "."
-    }).mkString
-    regex.r
+    }.mkString.r
   }
 
-  private def makeSomewhereRegexes = clue.somewheres.toList.map(ch => (".*(" + ch + ").*").r)
+  private def makeSomewhereRegexes = {
+    clue.somewheres.toList.map(ch => (".*(" + ch + ").*").r)
+  }
 
-  private def absentRegex(s: Set[Char]): String = if (s.isEmpty) "." else "[^" + s.mkString + "]"
+  private def absentRegex(s: Set[Char]): String = {
+    if (s.isEmpty) "."
+    else "[^" + s.mkString + "]"
+  }
 }
