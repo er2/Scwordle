@@ -1,18 +1,18 @@
 package com.ericriese.scwordle
 
-case class GuessResult(
-                        positional: List[CharKnowledge],
-                        notPresent: Set[Char],
-                        somewheres: Set[Char]
-                      ) {
-  def +(other: GuessResult): GuessResult = {
+case class Clue(
+                 positional: List[CharKnowledge],
+                 notPresent: Set[Char],
+                 somewheres: Set[Char]
+               ) {
+  def +(other: Clue): Clue = {
     val sumOfPositionals = combinePositionals(other.positional)
     val knownLetters = sumOfPositionals.collect {
       case Known(c) => c
     }.toSet
     val sumOfSomewheres = (this.somewheres ++ other.somewheres) -- knownLetters
 
-    GuessResult(
+    Clue(
       positional = sumOfPositionals,
       notPresent = this.notPresent ++ other.notPresent,
       somewheres = sumOfSomewheres
@@ -31,23 +31,23 @@ case class GuessResult(
   }
 }
 
-object KnowNothing extends GuessResult(
+object KnowNothing extends Clue(
   positional = List.fill(5)(Unknown),
   notPresent = Set(),
   somewheres = Set()
 )
 
-object GuessResult {
+object Clue {
 
   /**
    * Response format
    * <pre>
-   * v: correct
-   * x: nowhere
-   * ~: somewhere else
+   * v: 🟩 correct
+   * x: ⬛ nowhere
+   * ~: 🟨 somewhere else
    * </pre>
    */
-  def parse(play: String, response: String): GuessResult = {
+  def parse(play: String, response: String): Clue = {
     response.ensuring(_.length == 5, "Response must be 5 characters long")
     (play zip response).zipWithIndex.map {
       case ((c, 'v'), i) => knowOneLetterAt(c, i)
@@ -57,22 +57,22 @@ object GuessResult {
     }.reduce(_ + _)
   }
 
-  private def knowOneLetterAt(c: Char, i: Int): GuessResult =
-    GuessResult(
+  private def knowOneLetterAt(c: Char, i: Int): Clue =
+    Clue(
       positional = List.fill(5)(Unknown).updated(i, Known(c)),
       notPresent = Set(),
       somewheres = Set()
     )
 
-  private def no(c: Char): GuessResult =
-    GuessResult(
+  private def no(c: Char): Clue =
+    Clue(
       positional = List.fill(5)(Unknown),
       notPresent = Set(c),
       somewheres = Set()
     )
 
-  def elsewhere(c: Char, i: Int): GuessResult =
-    GuessResult(
+  def elsewhere(c: Char, i: Int): Clue =
+    Clue(
       positional = List.fill(5)(Unknown).updated(i, Not(Set(c))),
       notPresent = Set(),
       somewheres = Set(c)

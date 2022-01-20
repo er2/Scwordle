@@ -19,13 +19,13 @@ object Scwordle {
     println(firstPlay)
 
     var lastPlay = firstPlay
-    var guessResult: GuessResult = KnowNothing
+    var clue: Clue = KnowNothing
 
     val scanner = new Scanner(System.in)
     while (scanner.hasNext) {
       val response = scanner.next()
-      guessResult = guessResult + GuessResult.parse(lastPlay, response)
-      remainingCandidates = remainingCandidates.filter(new Filterer(guessResult))
+      clue = clue + Clue.parse(lastPlay, response)
+      remainingCandidates = remainingCandidates.filter(new Filterer(clue))
       lastPlay = pick(remainingCandidates)
       println(lastPlay)
     }

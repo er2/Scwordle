@@ -4,6 +4,7 @@ import scala.io.Source
 
 object Dictionary {
 
+  /** read, cleanup and filter out all but 5 letter words */
   def apply(source :Source): Seq[String] = {
     val dictionary = Source.fromResource("words").getLines()
     val fives = dictionary

@@ -4,7 +4,7 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class TestFilterer extends AnyFunSuite {
 
-  val startsWithR: GuessResult = GuessResult(
+  val startsWithR: Clue = Clue(
     positional = List(Known('r'), Unknown, Unknown, Unknown, Unknown),
     notPresent = Set(),
     somewheres = Set()
@@ -14,7 +14,7 @@ class TestFilterer extends AnyFunSuite {
     assert(new Filterer(startsWithR).positionalRegex.toString() == "r....")
   }
 
-  val doesntStartWithA: GuessResult = GuessResult(
+  val doesntStartWithA: Clue = Clue(
     positional = List(Not(Set('a')), Unknown, Unknown, Unknown, Unknown),
     notPresent = Set(),
     somewheres = Set()
