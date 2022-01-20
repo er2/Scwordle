@@ -2,7 +2,6 @@ package com.ericriese.scwordle
 
 case class Clue(
                  positional: List[CharKnowledge],
-                 notPresent: Set[Char],
                  somewheres: Set[Char]
                ) {
   def +(other: Clue): Clue = {
@@ -14,7 +13,6 @@ case class Clue(
 
     Clue(
       positional = sumOfPositionals,
-      notPresent = this.notPresent ++ other.notPresent,
       somewheres = sumOfSomewheres
     )
   }
@@ -33,7 +31,6 @@ case class Clue(
 
 object KnowNothing extends Clue(
   positional = List.fill(5)(Unknown),
-  notPresent = Set(),
   somewheres = Set()
 )
 
@@ -60,21 +57,18 @@ object Clue {
   private def knowOneLetterAt(c: Char, i: Int): Clue =
     Clue(
       positional = List.fill(5)(Unknown).updated(i, Known(c)),
-      notPresent = Set(),
       somewheres = Set()
     )
 
   private def no(c: Char): Clue =
     Clue(
-      positional = List.fill(5)(Unknown),
-      notPresent = Set(c),
+      positional = List.fill(5)(Not(Set(c))),
       somewheres = Set()
     )
 
   def elsewhere(c: Char, i: Int): Clue =
     Clue(
       positional = List.fill(5)(Unknown).updated(i, Not(Set(c))),
-      notPresent = Set(),
       somewheres = Set(c)
     )
 }

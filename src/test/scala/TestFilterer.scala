@@ -6,7 +6,6 @@ class TestFilterer extends AnyFunSuite {
 
   val startsWithR: Clue = Clue(
     positional = List(Known('r'), Unknown, Unknown, Unknown, Unknown),
-    notPresent = Set(),
     somewheres = Set()
   )
 
@@ -16,7 +15,6 @@ class TestFilterer extends AnyFunSuite {
 
   val doesntStartWithA: Clue = Clue(
     positional = List(Not(Set('a')), Unknown, Unknown, Unknown, Unknown),
-    notPresent = Set(),
     somewheres = Set()
   )
 
