@@ -42,9 +42,12 @@ object Clue {
    * v: 🟩 correct
    * x: ⬛ nowhere
    * ~: 🟨 somewhere else
+   * ?: previous suggestion not in Wordle dictionary
    * </pre>
    */
   def parse(play: String, response: String): Clue = {
+    if (response.contains("?"))
+      return KnowNothing
     response.ensuring(_.length == 5, "Response must be 5 characters long")
     (play zip response).zipWithIndex.map {
       case ((c, 'v'), i) => knowOneLetterAt(c, i)

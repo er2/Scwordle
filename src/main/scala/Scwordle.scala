@@ -1,6 +1,8 @@
 package com.ericriese.scwordle
 
 import java.util.Scanner
+import scala.::
+import scala.collection.mutable
 import scala.io.Source
 import scala.util.Random
 
@@ -8,14 +10,26 @@ object Scwordle {
 
   val random = new Random()
 
-  def main(args: Array[String]): Unit = {
+  /**
+   * @param previousPlays in case of failure, Scwordle can be rerun with previous words to return to the middle of a game
+   */
+  def main(previousPlaysArg: Array[String]): Unit = {
+
+    val previousPlays = previousPlaysArg.to(mutable.ArrayDeque)
 
     var remainingCandidates = Dictionary(Source.fromResource("words"))
 
-    val firstPlay = {
+    val candidates = if (previousPlays.isEmpty) {
       val initialGuesses = remainingCandidates.filter(countLetters(_) == 5)
-      pick(initialGuesses)
+      val firstPlay = pick(initialGuesses)
+      val plays = mutable.ArrayDeque(firstPlay)
+      plays.addAll(previousPlays)
+      () => plays.removeHead()
+    } else {
+      () => previousPlays.removeHeadOption().getOrElse(pick(remainingCandidates))
     }
+
+    val firstPlay = candidates()
     println(firstPlay)
 
     var lastPlay = firstPlay
@@ -26,7 +40,7 @@ object Scwordle {
       val response = scanner.next()
       clue = clue + Clue.parse(lastPlay, response)
       remainingCandidates = remainingCandidates.filter(new Filterer(clue))
-      lastPlay = pick(remainingCandidates)
+      lastPlay = candidates()
       println(lastPlay)
     }
   }
