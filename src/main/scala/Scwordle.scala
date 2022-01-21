@@ -13,23 +13,22 @@ object Scwordle {
   /**
    * @param previousPlays in case of failure, Scwordle can be rerun with previous words to return to the middle of a game
    */
-  def main(previousPlaysArg: Array[String]): Unit = {
-
-    val previousPlays = previousPlaysArg.to(mutable.ArrayDeque)
+  def main(previousPlays: Array[String]): Unit = {
 
     var remainingCandidates = Dictionary(Source.fromResource("words"))
 
-    val candidates = if (previousPlays.isEmpty) {
-      val initialGuesses = remainingCandidates.filter(countLetters(_) == 5)
-      val firstPlay = pick(initialGuesses)
-      val plays = mutable.ArrayDeque(firstPlay)
-      plays.addAll(previousPlays)
-      () => plays.removeHead()
-    } else {
-      () => previousPlays.removeHeadOption().getOrElse(pick(remainingCandidates))
+    val candidates = {
+      val firstPlays = if (previousPlays.nonEmpty) {
+        previousPlays.iterator
+      } else {
+        val initialGuesses = remainingCandidates.filter(countLetters(_) == 5)
+        val firstPlay = pick(initialGuesses)
+        Iterator.single(firstPlay)
+      }
+      firstPlays ++ Iterator.continually(pick(remainingCandidates))
     }
 
-    val firstPlay = candidates()
+    val firstPlay = candidates.next()
     println(firstPlay)
 
     var lastPlay = firstPlay
@@ -40,7 +39,7 @@ object Scwordle {
       val response = scanner.next()
       clue = clue + Clue.parse(lastPlay, response)
       remainingCandidates = remainingCandidates.filter(new Filterer(clue))
-      lastPlay = candidates()
+      lastPlay = candidates.next()
       println(lastPlay)
     }
   }
