@@ -1,5 +1,6 @@
 package com.ericriese.scwordle
 
+import scala.collection.mutable
 import scala.io.Source
 
 object Dictionary {
@@ -10,7 +11,7 @@ object Dictionary {
     val fives = dictionary
       .filter(!_.contains("'"))
       .filter(_.length == 5)
-      .filter(_ (0).isLower)
+      .filter(_(0).isLower)
     val canonicalized = removeAdjacentDuplicates(fives)
     canonicalized
   }
