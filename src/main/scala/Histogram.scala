@@ -3,9 +3,13 @@ package com.ericriese.scwordle
 import scala.collection.immutable.TreeMap
 import scala.util.Random
 
-class Histogram(words: Seq[String]):
+object Histogram:
+  def apply(words: Seq[String]): Histogram =
+    new Histogram(
+      words.flatten.groupMapReduce(k => k)(_ => 1)(_ + _)
+    )
 
-  private val histo: Map[Char, Int] = words.flatten.groupMapReduce(k => k)(_ => 1)(_ + _)
+class Histogram(histo: Map[Char, Int]):
 
   private val leastCommon = histo.values.minOption.getOrElse(1).toDouble
 
