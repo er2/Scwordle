@@ -17,12 +17,7 @@ object Guesses:
 class Guesses(map: TreeMap[Int, List[String]]) extends PlaySource:
 
   def filter(filter: String => Boolean): Guesses =
-    new Guesses(
-      TreeMap.from(
-        map.view.mapValues(_.filter(w => filter(w)))
-          .filter((letterCount, words) => words.nonEmpty)
-      )
-    )
+    Guesses(map.values.flatten.filter(filter).toSeq)
 
   override def next(filterer: String => Boolean): (String, PlaySource) =
     filter(filterer).next()
