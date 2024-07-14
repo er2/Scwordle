@@ -29,6 +29,6 @@ class Histogram(histo: Map[Char, Int]):
   private def sortKey(word: String) =
     (-scoreWord(word), random.nextDouble(), word)
 
-  def sort(words: Seq[String]): Iterable[String] =
+  def sort(words: Seq[String]): List[String] =
     TreeMap.from(words.map(sortKey) zip words)
-      .values
+      .values.toList

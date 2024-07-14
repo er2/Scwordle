@@ -2,6 +2,11 @@ package com.ericriese.scwordle
 
 class Plays(previousPlays: List[String], guesses: Guesses) extends PlaySource:
 
+  override def next(): (String, PlaySource) =
+    previousPlays match
+      case head::tail => (head, Plays(tail, guesses))
+      case _ => guesses.next()
+
   override def next(filterer: String => Boolean): (String, PlaySource) =
     val newGuesses = guesses.filter(filterer)
     (previousPlays.head, Plays(previousPlays.tail, newGuesses))
