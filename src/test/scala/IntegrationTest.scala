@@ -6,7 +6,7 @@ class IntegrationTest extends AnyFunSuite {
 
   test("removes share after we learn it doesn't start with s") {
     val guesses = Guesses(Seq("stand", "share"))
-    guesses.filter(new Filterer(Clue.parse("stand", "x~v~x")))
+    guesses.filterInPlace(new Filterer(Clue.parse("stand", "x~v~x")))
     assert(guesses.isEmpty)
   }
 
@@ -32,7 +32,7 @@ class IntegrationTest extends AnyFunSuite {
 
   test("clears out guesses after all filterer") {
     val guesses = Guesses(Seq("stand", "share"))
-    guesses.filter(s => false)
+    guesses.filterInPlace(s => false)
     assert(guesses.isEmpty)
   }
 

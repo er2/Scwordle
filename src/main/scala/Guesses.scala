@@ -19,7 +19,7 @@ object Guesses:
 
 class Guesses(map: mutable.TreeMap[Int, mutable.Stack[String]]):
 
-  def filter(filter: String => Boolean): Unit =
+  def filterInPlace(filter: String => Boolean): Unit =
     map.values.foreach(_.removeAll(s => !filter(s)))
     map.filterInPlace((_, words) => words.nonEmpty)
 
