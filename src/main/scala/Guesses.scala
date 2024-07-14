@@ -25,15 +25,12 @@ class Guesses(map: mutable.TreeMap[Int, mutable.Stack[String]]):
     map.values.foreach(_.removeAll(s => !filter(s)))
     removeEmptyEntries()
 
-  def remove(s: String): Unit =
-    map(countLetters(s)).removeAll(_ == s)
-    removeEmptyEntries()
-
   private def removeEmptyEntries(): Unit =
-    map.filterInPlace((_, v) => v.nonEmpty)
+    if (map.last._2.isEmpty)
+      map.remove(map.lastKey)
 
   def next(): String =
-    val result = map.lastOption.get._2.pop()
+    val result = map.last._2.pop()
     removeEmptyEntries()
     result
 

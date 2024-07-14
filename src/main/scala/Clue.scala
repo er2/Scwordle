@@ -1,9 +1,12 @@
 package com.ericriese.scwordle
 
+import scala.annotation.targetName
+
 case class Clue(
                  positional: List[CharKnowledge],
                  somewheres: Set[Char]
                ) {
+  @targetName("plus")
   def +(other: Clue): Clue = {
     val sumOfPositionals = combinePositionals(other.positional)
     val knownLetters = sumOfPositionals.collect {
@@ -69,7 +72,7 @@ object Clue {
       somewheres = Set()
     )
 
-  def elsewhere(c: Char, i: Int): Clue =
+  private def elsewhere(c: Char, i: Int): Clue =
     Clue(
       positional = List.fill(5)(Unknown).updated(i, Not(Set(c))),
       somewheres = Set(c)

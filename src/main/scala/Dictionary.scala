@@ -1,6 +1,5 @@
 package com.ericriese.scwordle
 
-import scala.collection.mutable
 import scala.io.Source
 
 object Dictionary {
@@ -17,7 +16,7 @@ object Dictionary {
   }
 
   private def removeAdjacentDuplicates(in: Iterator[String]): Seq[String] = {
-    in.foldLeft(List[String]())((list, word) => {
+    in.foldLeft(Nil)((list, word) => {
       if (list.isEmpty)
         word :: list
       else if (word.equalsIgnoreCase(list.head))
