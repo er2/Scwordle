@@ -4,14 +4,11 @@ import scala.util.matching.Regex
 
 class Filterer(clue: Clue) extends (String => Boolean) {
 
-  val positionalRegex: Regex = makePositionalRegex
-  private val somewhereRegexes: List[Regex] = makeSomewhereRegexes
-
   override def apply(w: String): Boolean = {
     (positionalRegex :: somewhereRegexes).forall(_.matches(w))
   }
 
-  private def makePositionalRegex: Regex = {
+  val positionalRegex: Regex =  {
     clue.positional.map {
       case Known(c) => c
       case Not(s) => absentRegex(s)
@@ -19,7 +16,7 @@ class Filterer(clue: Clue) extends (String => Boolean) {
     }.mkString.r
   }
 
-  private def makeSomewhereRegexes = {
+  val somewhereRegexes: List[Regex] =  {
     clue.somewheres.toList.map(ch => (".*(" + ch + ").*").r)
   }
 
