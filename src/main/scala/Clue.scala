@@ -57,7 +57,7 @@ object Clue:
 
   private def knowOneLetterAt(c: Char, i: Int): Clue =
     Clue(
-      positional = List.fill(5)(Unknown).updated(i, Known(c)),
+      positional = KnowNothing.positional.updated(i, Known(c)),
       somewheres = Set()
     )
 

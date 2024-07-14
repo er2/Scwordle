@@ -1,33 +1,37 @@
 package com.ericriese.scwordle
 
-import scala.collection.mutable
-import scala.util.Random
+import scala.collection.immutable.TreeMap
 
 object Guesses:
   def apply(words: Seq[String]): Guesses =
+    val histogram = Histogram(words)
     new Guesses(
-      mutable.TreeMap.from(
+      TreeMap.from(
         words.groupBy(countLetters)
-          .view.mapValues(shuffle)
+          .view.mapValues(histogram.sort)
       )
     )
 
-  private def shuffle(s: Seq[String]): mutable.Stack[String] =
-    mutable.Stack.from(Random.shuffle(s))
-
   private def countLetters(s: String): Int = s.toSet.size
 
-class Guesses(map: mutable.TreeMap[Int, mutable.Stack[String]]):
+class Guesses(map: TreeMap[Int, List[String]]) extends PlaySource:
 
-  def filterInPlace(filter: String => Boolean): Unit =
-    map.values.foreach(_.removeAll(s => !filter(s)))
-    map.filterInPlace((_, words) => words.nonEmpty)
+  def filter(filter: String => Boolean): Guesses =
+    new Guesses(
+      TreeMap.from(
+        map.view.mapValues(_.filter(w => filter(w)))
+          .filter((letterCount, words) => words.nonEmpty)
+      )
+    )
 
-  def pop(): String =
+  override def next(filterer: String => Boolean): (String, PlaySource) =
+    filter(filterer).next()
+
+  override def next(): (String, Guesses) =
     val (count, words) = map.last
-    val result = words.pop()
-    if (words.isEmpty)
-      map.remove(count)
-    result
+    words match
+      case head::tail => (words.head, new Guesses(map.updated(count, tail)))
+      case Nil => new Guesses(map.removed(count)).next()
 
   export map.isEmpty
+

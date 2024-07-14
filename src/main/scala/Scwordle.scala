@@ -12,9 +12,9 @@ object Scwordle:
 
     val guesses = Guesses(Source.fromResource("words").getLines().toSeq)
 
-    val plays = previousPlays.iterator ++ Iterator.continually(guesses.pop())
+    val initialPlays = Plays(previousPlays.toList, guesses)
 
-    val firstPlay = plays.next()
+    var (firstPlay, plays) = initialPlays.next()
     println(firstPlay)
 
     var lastPlay = firstPlay
@@ -24,6 +24,7 @@ object Scwordle:
     while (scanner.hasNext)
       val response = scanner.next()
       clue = clue + Clue.parse(lastPlay, response)
-      guesses.filterInPlace(new Filterer(clue))
-      lastPlay = plays.next()
+      val nextPlay = plays.next(new Filterer(clue))
+      lastPlay = nextPlay._1
+      plays = nextPlay._2
       println(lastPlay)
