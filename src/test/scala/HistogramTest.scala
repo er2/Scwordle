@@ -8,5 +8,5 @@ class HistogramTest extends AnyFunSuite:
     val testDict = Seq("aaaaa", "bbbcc", "vwxyz").reverse
     val histogram = new Histogram(testDict)
     val sorted = histogram.sort(testDict)
-    assert(sorted == Seq("aaaaa", "bbbcc", "vwxyz"))
+    assert(sorted.toSeq == Seq("aaaaa", "bbbcc", "vwxyz"))
     assert(sorted.head == "aaaaa")

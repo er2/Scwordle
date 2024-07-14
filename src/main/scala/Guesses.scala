@@ -14,7 +14,7 @@ object Guesses:
 
   private def countLetters(s: String): Int = s.toSet.size
 
-class Guesses(map: TreeMap[Int, List[String]]) extends PlaySource:
+class Guesses(map: TreeMap[Int, Iterable[String]]) extends PlaySource:
 
   def filter(filter: String => Boolean): Guesses =
     Guesses(map.values.flatten.filter(filter).toSeq)
