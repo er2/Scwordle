@@ -10,9 +10,9 @@ object Scwordle {
    */
   def main(previousPlays: Array[String]): Unit = {
 
-    val guesses = Guesses(Dictionary(Source.fromResource("words")))
+    val guesses = Guesses(Source.fromResource("words").getLines().toSeq)
 
-    val candidates = previousPlays.iterator ++ Iterator.continually(guesses.next())
+    val candidates = previousPlays.iterator ++ Iterator.continually(guesses.pop())
 
     val firstPlay = candidates.next()
     println(firstPlay)

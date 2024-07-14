@@ -1,7 +1,5 @@
 package com.ericriese.scwordle
 
-import Guesses.countLetters
-
 import scala.collection.mutable
 import scala.util.Random
 
@@ -17,21 +15,19 @@ object Guesses:
   private def shuffle(s: Seq[String]): mutable.Stack[String] =
     mutable.Stack.from(Random.shuffle(s))
 
-  def countLetters(s: String): Int = s.toSet.size
+  private def countLetters(s: String): Int = s.toSet.size
 
 class Guesses(map: mutable.TreeMap[Int, mutable.Stack[String]]):
 
   def filter(filter: String => Boolean): Unit =
     map.values.foreach(_.removeAll(s => !filter(s)))
-    removeEmptyEntries()
+    map.filterInPlace((_, words) => words.nonEmpty)
 
-  private def removeEmptyEntries(): Unit =
-    if (map.last._2.isEmpty)
-      map.remove(map.lastKey)
-
-  def next(): String =
-    val result = map.last._2.pop()
-    removeEmptyEntries()
+  def pop(): String =
+    val (count, words) = map.last
+    val result = words.pop()
+    if (words.isEmpty)
+      map.remove(count)
     result
 
-  def isEmpty: Boolean = map.isEmpty
+  export map.isEmpty
