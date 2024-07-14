@@ -3,12 +3,12 @@ package com.ericriese.scwordle
 import java.util.Scanner
 import scala.io.Source
 
-object Scwordle {
+object Scwordle:
 
   /**
    * @param previousPlays in case of failure, Scwordle can be rerun with previous words to return to the middle of a game
    */
-  def main(previousPlays: Array[String]): Unit = {
+  def main(previousPlays: Array[String]): Unit =
 
     val guesses = Guesses(Source.fromResource("words").getLines().toSeq)
 
@@ -21,13 +21,9 @@ object Scwordle {
     var clue: Clue = KnowNothing
 
     val scanner = new Scanner(System.in)
-    while (scanner.hasNext) {
+    while (scanner.hasNext)
       val response = scanner.next()
       clue = clue + Clue.parse(lastPlay, response)
       guesses.filterInPlace(new Filterer(clue))
       lastPlay = plays.next()
       println(lastPlay)
-    }
-  }
-
-}
